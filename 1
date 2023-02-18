@@ -1,0 +1,141 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
+public class Main {
+
+
+    private DefaultTableModel tableModel1;
+    private DefaultTableModel tableModel2;
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        main.createUI();
+    }
+
+    public void createUI() {
+        JFrame frame = new JFrame("Random Numbers");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        // Создаем кнопку
+        JButton button = new JButton("Загрузить числа");
+        Font font = button.getFont();
+        button.setFont(font.deriveFont(50f));
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadNumbers();
+            }
+        });
+        button.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); // добавляем отступ сверху
+
+
+
+        // Создаем контейнер Box для размещения таблиц
+        Box box = Box.createHorizontalBox();
+
+        // Создаем таблицу для отображения чисел
+        Font tableFont = new Font("Arial", Font.BOLD, 50);
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+        cellRenderer.setFont(tableFont); // устанавливаем размер шрифта для ячеек таблицы
+        JTable table = new JTable();
+        table.setDefaultRenderer(Object.class, cellRenderer); // устанавливаем рендерер для всех ячеек таблицы
+        tableModel1 = new DefaultTableModel();
+        tableModel1.addColumn("1-ая колонка");
+        table.setModel(tableModel1);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(200, 300));
+        JTableHeader header = table.getTableHeader();
+        Font headerFont = new Font("Arial", Font.BOLD, 35);
+        header.setFont(headerFont);
+
+
+
+        // Создаем вторую таблицу для отображения чисел
+        JTable table2 = new JTable();
+        table2.setDefaultRenderer(Object.class, cellRenderer);
+        tableModel2 = new DefaultTableModel();
+        tableModel2.addColumn("2-ая колонка");
+        table2.setModel(tableModel2);
+        JScrollPane scrollPane2 = new JScrollPane(table2);
+        scrollPane2.setPreferredSize(new Dimension(200, 300));
+        JTableHeader header2 = table2.getTableHeader();
+        Font headerFont2 = new Font("Arial", Font.BOLD, 35);
+        header2.setFont(headerFont2);
+
+        // Устанавливаем отступ между таблицами
+        box.add(scrollPane);
+        box.add(Box.createHorizontalStrut(50));
+        box.add(scrollPane2);
+
+        // Устанавливаем отступы от краев контейнера Box
+        box.setBorder(BorderFactory.createEmptyBorder(50, 200, 50, 200));
+
+        // Добавляем контейнер Box на фрейм
+        frame.add(box);
+
+        // Создаем панель для заднего фона
+        JPanel backgroundPanel = new JPanel();
+        BoxLayout layout = new BoxLayout(backgroundPanel, BoxLayout.Y_AXIS);
+        backgroundPanel.setLayout(layout);
+
+// Создаем объект JLabel для отображения картинки
+        JLabel backgroundLabel = new JLabel(new ImageIcon("bg_image.png"));
+        backgroundLabel.setLayout(new BorderLayout());
+
+        // Добавляем все элементы на панель заднего фона
+        backgroundPanel.add(button);
+        backgroundPanel.add(box);
+
+        // Добавляем панель заднего фона на форму
+        frame.add(backgroundPanel);
+        frame.setContentPane(backgroundPanel);
+
+        // Добавляем панель с кнопкой и таблицами на форму
+//        frame.add(tableAll, BorderLayout.CENTER);
+//        frame.setContentPane(tableAll);
+
+
+        // Устанавливаем размер и отображаем форму
+        frame.setSize(800, 600);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
+    }
+
+    private void loadNumbers() {
+        // Очищаем таблицы перед загрузкой новых чисел
+        tableModel1.setRowCount(0);
+        tableModel2.setRowCount(0);
+
+        // Создаем список чисел от 1 до 10
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            numbers.add(i);
+        }
+
+        // Перемешиваем список случайным образом
+        Collections.shuffle(numbers);
+
+
+        // Разбиваем список на две равные части
+        List<Integer> column1 = numbers.subList(0, numbers.size() / 2);
+        List<Integer> column2 = numbers.subList(numbers.size() / 2, numbers.size());
+
+        // Заполняем таблицу числами из двух столбцов
+        int numRows = 5;
+        for (int i = 0; i < numRows; i++) {
+            int num1 = column1.get(i);
+            int num2 = column2.get(i);
+            tableModel1.addRow(new Object[]{num1});
+            tableModel2.addRow(new Object[]{num2});
+        }
+    }
+}
